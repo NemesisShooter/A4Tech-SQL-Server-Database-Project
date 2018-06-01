@@ -1,0 +1,78 @@
+31/05/2018 16:12:17	This log contains information about the import schema operation into project 'A4Tech SQL Server Database Project' on computer 'M-SIMIONIDI' by user 'm.simionidi'.
+31/05/2018 16:12:17	Import of database schema has started.
+31/05/2018 16:12:23	Gathering database options
+31/05/2018 16:12:23	Gathering users
+31/05/2018 16:12:23	Gathering roles
+31/05/2018 16:12:23	Gathering application roles
+31/05/2018 16:12:23	Gathering role memberships
+31/05/2018 16:12:23	Gathering filegroups
+31/05/2018 16:12:23	Gathering full-text catalogs
+31/05/2018 16:12:23	Gathering assemblies
+31/05/2018 16:12:23	Gathering certificates
+31/05/2018 16:12:23	Gathering asymmetric keys
+31/05/2018 16:12:23	Gathering symmetric keys
+31/05/2018 16:12:23	Gathering encrypted symmetric keys
+31/05/2018 16:12:23	Gathering schemas
+31/05/2018 16:12:23	Gathering XML schema collections
+31/05/2018 16:12:23	Gathering user-defined data types
+31/05/2018 16:12:23	Gathering user-defined types
+31/05/2018 16:12:23	Gathering table types
+31/05/2018 16:12:23	Gathering unique keys for table types
+31/05/2018 16:12:23	Gathering primary keys for table types
+31/05/2018 16:12:23	Gathering indexes for table types
+31/05/2018 16:12:23	Gathering check constraints for table types
+31/05/2018 16:12:23	Gathering default constraints for table types
+31/05/2018 16:12:23	Gathering partition functions
+31/05/2018 16:12:23	Gathering partition schemes
+31/05/2018 16:12:23	Gathering functions
+31/05/2018 16:12:23	Gathering encrypted functions
+31/05/2018 16:12:23	Gathering aggregates
+31/05/2018 16:12:23	Gathering procedures
+31/05/2018 16:12:23	Gathering encrypted procedures
+31/05/2018 16:12:24	Gathering tables
+31/05/2018 16:12:24	Gathering primary keys
+31/05/2018 16:12:24	Gathering unique constraints
+31/05/2018 16:12:24	Gathering foreign keys
+31/05/2018 16:12:24	Gathering default constraints
+31/05/2018 16:12:24	Gathering check constraints
+31/05/2018 16:12:24	Gathering views
+31/05/2018 16:12:24	Gathering encrypted views
+31/05/2018 16:12:24	Gathering indexes
+31/05/2018 16:12:24	Gathering statistics
+31/05/2018 16:12:24	Gathering full-text index stoplists
+31/05/2018 16:12:24	Gathering search property lists
+31/05/2018 16:12:24	Gathering search properties
+31/05/2018 16:12:24	Gathering full-text indexes
+31/05/2018 16:12:24	Gathering column store indexes
+31/05/2018 16:12:24	Gathering spatial indexes
+31/05/2018 16:12:24	Gathering XML indexes
+31/05/2018 16:12:24	Gathering Selective XML indexes
+31/05/2018 16:12:24	Gathering encrypted triggers
+31/05/2018 16:12:24	Gathering triggers
+31/05/2018 16:12:24	Gathering encrypted and clr ddl triggers
+31/05/2018 16:12:24	Gathering ddl triggers
+31/05/2018 16:12:24	Gathering synonyms
+31/05/2018 16:12:24	Gathering defaults
+31/05/2018 16:12:24	Gathering data constraint uddt bindings
+31/05/2018 16:12:24	Gathering rules
+31/05/2018 16:12:24	Gathering data constraint uddt bindings
+31/05/2018 16:12:24	Gathering message types
+31/05/2018 16:12:24	Gathering queues
+31/05/2018 16:12:24	Gathering contracts
+31/05/2018 16:12:24	Gathering services
+31/05/2018 16:12:24	Gathering event notifications
+31/05/2018 16:12:24	Gathering remote service bindings
+31/05/2018 16:12:24	Gathering broker priorities
+31/05/2018 16:12:24	Gathering signatures
+31/05/2018 16:12:24	Gathering data compression options
+31/05/2018 16:12:24	Gathering sequence types
+31/05/2018 16:12:24	Gathering database permissions
+31/05/2018 16:12:24	Gathering extended properties
+31/05/2018 16:12:24	Gathering credentials
+31/05/2018 16:12:24	Gathering logins
+31/05/2018 16:12:24	Gathering server audits
+31/05/2018 16:12:24	Scanning project for duplicate elements
+31/05/2018 16:12:24	Finished duplicate element processing
+31/05/2018 16:12:25	Finished importing database.
+31/05/2018 16:12:25	A summary of the import was saved to the following location: C:\Users\m.simionidi\documents\visual studio 2015\Projects\A4Tech SQL Server Database Project\A4Tech SQL Server Database Project\Import Schema Logs\A4Tech SQL Server Da_20180531011217.log
+31/05/2018 16:12:25	Click Finish to continue...
