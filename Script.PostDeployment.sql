@@ -10,15 +10,15 @@ Post-Deployment Script Template
 --------------------------------------------------------------------------------------
 */
 
-PRINT 'Post-Deployment Script'
+PRINT 'Post-Deployment Script Start'
 
 IF EXISTS (SELECT * FROM DWH.DimDate)
 	BEGIN
-		PRINT 'PDS Nothing to input'
+		PRINT 'PDS: Nothing to input'
 	END
 ELSE
 	BEGIN
-		PRINT 'PDS Filling DimDate Data Rows'
+		PRINT 'PDS: Filling DimDate Data Rows'
 
 DECLARE @StartDate DATE = '20000101', @NumberOfYears INT = 30;
 
@@ -111,5 +111,5 @@ SELECT
 FROM #dim
 OPTION (MAXDOP 1);
 
-PRINT 'PDS Finishing...'
+PRINT 'PDS: Finishing...'
 	END
