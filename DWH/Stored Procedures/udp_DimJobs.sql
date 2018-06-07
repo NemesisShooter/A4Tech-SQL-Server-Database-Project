@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [dbo].[DimJobs_UDP] AS
+﻿CREATE PROCEDURE [DWH].[udp_DimJobs] AS
 
 TRUNCATE TABLE DWH.DimJobs
 

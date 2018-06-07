@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [dbo].[DimEmployee_UDP] AS
+﻿CREATE PROCEDURE [DWH].[udp_DimEmployee] AS
 
 INSERT	INTO [DWH].[DimEmployee]
 (

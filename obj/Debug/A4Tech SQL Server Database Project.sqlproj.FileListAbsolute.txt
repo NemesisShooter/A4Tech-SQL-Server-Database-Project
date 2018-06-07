@@ -3,3 +3,7 @@ C:\Users\m.simionidi\documents\visual studio 2015\Projects\A4Tech SQL Server Dat
 C:\Users\m.simionidi\documents\visual studio 2015\Projects\A4Tech SQL Server Database Project\A4Tech SQL Server Database Project\bin\Debug\A4Tech_SQL_Server_Database_Project.pdb
 C:\Users\m.simionidi\documents\visual studio 2015\Projects\A4Tech SQL Server Database Project\A4Tech SQL Server Database Project\obj\Debug\A4Tech_SQL_Server_Database_Project.dll
 C:\Users\m.simionidi\documents\visual studio 2015\Projects\A4Tech SQL Server Database Project\A4Tech SQL Server Database Project\obj\Debug\A4Tech_SQL_Server_Database_Project.pdb
+C:\Users\m.simionidi\documents\visual studio 2015\Projects\A4Tech SQL Server Database Project\A4Tech SQL Server Database Project\obj\Debug\Model.xml
+C:\Users\m.simionidi\documents\visual studio 2015\Projects\A4Tech SQL Server Database Project\A4Tech SQL Server Database Project\obj\Debug\refactor.xml
+C:\Users\m.simionidi\documents\visual studio 2015\Projects\A4Tech SQL Server Database Project\A4Tech SQL Server Database Project\obj\Debug\postdeploy.sql
+C:\Users\m.simionidi\documents\visual studio 2015\Projects\A4Tech SQL Server Database Project\A4Tech SQL Server Database Project\obj\Debug\predeploy.sql

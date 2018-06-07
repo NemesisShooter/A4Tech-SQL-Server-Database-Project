@@ -64,26 +64,29 @@
     <Folder Include="DWH\" />
     <Folder Include="DWH\Tables\" />
     <Folder Include="SGT\Views\" />
-    <Folder Include="dbo\" />
-    <Folder Include="dbo\Views\" />
-    <Folder Include="dbo\Stored Procedures\" />
     <Folder Include="Security\" />
+    <Folder Include="SGT\Stored Procedures\" />
+    <Folder Include="DWH\Stored Procedures\" />
+    <Folder Include="DWH\Views\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="SGT\Tables\StagingTable.sql" />
     <Build Include="DWH\Tables\DimEmployee.sql" />
     <Build Include="DWH\Tables\DimDate.sql" />
-    <Build Include="DWH\Tables\FactTable.sql" />
     <Build Include="DWH\Tables\DimJobs.sql" />
     <Build Include="SGT\Views\view_StagingTable.sql" />
-    <Build Include="dbo\Views\vw_employee_job_information.sql" />
-    <Build Include="dbo\Views\vw_employee_name_information.sql" />
-    <Build Include="dbo\Stored Procedures\DimEmployee_UDP.sql" />
-    <Build Include="dbo\Stored Procedures\DimJobs_UDP.sql" />
-    <Build Include="dbo\Stored Procedures\FactTable_UDP.sql" />
-    <Build Include="dbo\Stored Procedures\CleaningStagingTable_UDP.sql" />
     <Build Include="Security\DWH_1.sql" />
     <Build Include="Security\SGT_1.sql" />
-    <Build Include="dbo\Stored Procedures\DimDate_UDP.sql" />
+    <Build Include="DWH\Tables\FactJobChange.sql" />
+    <Build Include="SGT\Stored Procedures\udp_StagingTableCleaning.sql" />
+    <Build Include="DWH\Stored Procedures\udp_FactJobChange.sql" />
+    <Build Include="DWH\Stored Procedures\udp_DimJobs.sql" />
+    <Build Include="DWH\Stored Procedures\udp_DimEmployee.sql" />
+    <Build Include="DWH\Stored Procedures\udp_DimDate.sql" />
+    <Build Include="DWH\Views\vw_employee_name_information.sql" />
+    <Build Include="DWH\Views\vw_employee_job_information.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="A4Tech SQL Server Database Project.publish.xml" />
   </ItemGroup>
 </Project>

@@ -1,6 +1,6 @@
 ﻿
 
-CREATE PROCEDURE [dbo].[DimDate_UDP] AS
+CREATE PROCEDURE [DWH].[udp_DimDate] AS
 
 DECLARE @StartDate DATE = '20000101', @NumberOfYears INT = 30;
 

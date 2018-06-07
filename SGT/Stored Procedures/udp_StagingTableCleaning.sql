@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [dbo].[CleaningStagingTable_UDP] AS 
+﻿CREATE PROCEDURE [SGT].[udp_StagingTableCleaning] AS 
 
 WITH cte
      AS (

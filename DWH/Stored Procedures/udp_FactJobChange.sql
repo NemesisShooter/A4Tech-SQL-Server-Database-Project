@@ -1,8 +1,8 @@
-﻿CREATE PROCEDURE [dbo].[FactTable_UDP] AS
+﻿CREATE PROCEDURE [DWH].[udp_FactJobChange] AS
 
-TRUNCATE TABLE DWH.FactTable
+TRUNCATE TABLE DWH.FactJobChange
 
-INSERT INTO DWH.FactTable
+INSERT INTO [DWH].[FactJobChange]
 (
 IdDimEmployee,
 IdDimJobs,
