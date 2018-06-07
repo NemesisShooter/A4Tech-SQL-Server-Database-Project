@@ -89,4 +89,7 @@
   <ItemGroup>
     <None Include="A4Tech SQL Server Database Project.publish.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="Script.PostDeployment.sql" />
+  </ItemGroup>
 </Project>

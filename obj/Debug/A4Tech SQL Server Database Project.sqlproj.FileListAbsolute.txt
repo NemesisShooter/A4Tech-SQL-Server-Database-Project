@@ -7,3 +7,4 @@ C:\Users\m.simionidi\documents\visual studio 2015\Projects\A4Tech SQL Server Dat
 C:\Users\m.simionidi\documents\visual studio 2015\Projects\A4Tech SQL Server Database Project\A4Tech SQL Server Database Project\obj\Debug\refactor.xml
 C:\Users\m.simionidi\documents\visual studio 2015\Projects\A4Tech SQL Server Database Project\A4Tech SQL Server Database Project\obj\Debug\postdeploy.sql
 C:\Users\m.simionidi\documents\visual studio 2015\Projects\A4Tech SQL Server Database Project\A4Tech SQL Server Database Project\obj\Debug\predeploy.sql
+C:\Users\m.simionidi\Documents\Visual Studio 2015\Projects\A4Tech SQL Server Database Project\A4Tech SQL Server Database Project\obj\Debug\A4Tech SQL Server Database Project.sqlprojAssemblyReference.cache
