@@ -82,7 +82,6 @@
     <Build Include="DWH\Stored Procedures\udp_FactJobChange.sql" />
     <Build Include="DWH\Stored Procedures\udp_DimJobs.sql" />
     <Build Include="DWH\Stored Procedures\udp_DimEmployee.sql" />
-    <Build Include="DWH\Stored Procedures\udp_DimDate.sql" />
     <Build Include="DWH\Views\vw_employee_name_information.sql" />
     <Build Include="DWH\Views\vw_employee_job_information.sql" />
   </ItemGroup>

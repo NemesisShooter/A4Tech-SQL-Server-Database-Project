@@ -2,6 +2,7 @@
 
 
 
+
 CREATE VIEW [DWH].[vw_employee_job_information] AS
 
 SELECT 
@@ -11,7 +12,7 @@ SELECT
 	JobTitle,
 	FactMoney AS Salary,
 	CASE WHEN DWH.FactJobChange.IdDimDate = MAX(IdDimDate)OVER(PARTITION BY DWH.DimEmployee.BusinessEntityID) THEN 'Present' ELSE 'Past' END AS CurrentJob,
-	DWH.FactJobChange.IdDimDate
+	[Date]
 FROM	DWH.FactJobChange
 INNER JOIN DWH.DimEmployee
 	ON	DWH.DimEmployee.IdDimEmployee = DWH.FactJobChange.IdDimEmployee
