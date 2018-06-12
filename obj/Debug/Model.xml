@@ -785,6 +785,78 @@
 					<References Name="[DWH]" />
 				</Entry>
 			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="6" />
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="7" />
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="8" />
+		</Element>
+		<Element Type="SqlForeignKeyConstraint" Name="[DWH].[FK_DimDate]">
+			<Relationship Name="Columns">
+				<Entry>
+					<References Name="[DWH].[FactJobChange].[IdDimDate]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[DWH].[FactJobChange]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="ForeignColumns">
+				<Entry>
+					<References Name="[DWH].[DimDate].[DateKey]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="ForeignTable">
+				<Entry>
+					<References Name="[DWH].[DimDate]" />
+				</Entry>
+			</Relationship>
+			<AttachedAnnotation Disambiguator="6" />
+		</Element>
+		<Element Type="SqlForeignKeyConstraint" Name="[DWH].[FK_DimEmployee]">
+			<Relationship Name="Columns">
+				<Entry>
+					<References Name="[DWH].[FactJobChange].[IdDimEmployee]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[DWH].[FactJobChange]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="ForeignColumns">
+				<Entry>
+					<References Name="[DWH].[DimEmployee].[IdDimEmployee]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="ForeignTable">
+				<Entry>
+					<References Name="[DWH].[DimEmployee]" />
+				</Entry>
+			</Relationship>
+			<AttachedAnnotation Disambiguator="7" />
+		</Element>
+		<Element Type="SqlForeignKeyConstraint" Name="[DWH].[FK_DimJobs]">
+			<Relationship Name="Columns">
+				<Entry>
+					<References Name="[DWH].[FactJobChange].[IdDimJobs]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="DefiningTable">
+				<Entry>
+					<References Name="[DWH].[FactJobChange]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="ForeignColumns">
+				<Entry>
+					<References Name="[DWH].[DimJobs].[IdDimJobs]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="ForeignTable">
+				<Entry>
+					<References Name="[DWH].[DimJobs]" />
+				</Entry>
+			</Relationship>
+			<AttachedAnnotation Disambiguator="8" />
 		</Element>
 		<Element Type="SqlPrimaryKeyConstraint" Name="[DWH].[PK_DimEmployee]">
 			<Relationship Name="ColumnSpecifications">
@@ -823,564 +895,6 @@
 				</Entry>
 			</Relationship>
 			<AttachedAnnotation Disambiguator="5" />
-		</Element>
-		<Element Type="SqlProcedure" Name="[DWH].[udp_DimDate]">
-			<Property Name="BodyScript">
-				<Value><![CDATA[
-
-DECLARE @StartDate DATE = '20000101', @NumberOfYears INT = 30;
-
--- prevent set or regional settings from interfering with 
--- interpretation of dates / literals
-
-SET DATEFIRST 1;
-SET DATEFORMAT ymd;
-
-DECLARE @CutoffDate DATE = '21990101';
-
--- this is just a holding table for intermediate calculations:
-
-CREATE TABLE #dim
-(
-  [date]       DATE PRIMARY KEY, 
-  [day]        AS DATEPART(DAY,      [date]),
-  [month]      AS DATEPART(MONTH,    [date]),
-  FirstOfMonth AS CONVERT(DATE, DATEADD(MONTH, DATEDIFF(MONTH, 0, [date]), 0)),
-  [MonthName]  AS DATENAME(MONTH,    [date]),
-  [week]       AS DATEPART(WEEK,     [date]),
-  [ISOweek]    AS DATEPART(ISO_WEEK, [date]),
-  [DayOfWeek]  AS DATEPART(WEEKDAY,  [date]),
-  [quarter]    AS DATEPART(QUARTER,  [date]),
-  [year]       AS DATEPART(YEAR,     [date]),
-  FirstOfYear  AS CONVERT(DATE, DATEADD(YEAR,  DATEDIFF(YEAR,  0, [date]), 0)),
-  Style112     AS CONVERT(CHAR(8),   [date], 112),
-  Style101     AS CONVERT(CHAR(10),  [date], 101)
-);
-
--- use the catalog views to generate as many rows as we need
-
-INSERT INTO #dim ([Date])
-VALUES ('1900-01-01')
-INSERT INTO #dim ([Date])
-VALUES ('2299-01-01')
-
-INSERT #dim([date]) 
-SELECT d
-FROM
-(
-  SELECT d = DATEADD(DAY, rn - 1, @StartDate)
-  FROM 
-  (
-    SELECT TOP (DATEDIFF(DAY, @StartDate, @CutoffDate)) 
-      rn = ROW_NUMBER() OVER (ORDER BY s1.[object_id])
-    FROM sys.all_objects AS s1
-    CROSS JOIN sys.all_objects AS s2
-    -- on my system this would support > 5 million days
-    ORDER BY s1.[object_id]
-  ) AS x
-) AS y;
-
-
-CREATE TABLE DWH.DimDate
-(
-  DateKey             INT         NOT NULL PRIMARY KEY,
-  [Date]              DATE        NOT NULL,
-  [Day]               TINYINT     NOT NULL,
-  DaySuffix           CHAR(2)     NOT NULL,
-  [Weekday]           TINYINT     NOT NULL,
-  WeekDayName         VARCHAR(10) NOT NULL,
-  IsWeekend           BIT         NOT NULL,
-  IsHoliday           BIT         NOT NULL,
-  HolidayText         VARCHAR(64) SPARSE,
-  DOWInMonth          TINYINT     NOT NULL,
-  [DayOfYear]         SMALLINT    NOT NULL,
-  WeekOfMonth         TINYINT     NOT NULL,
-  WeekOfYear          TINYINT     NOT NULL,
-  ISOWeekOfYear       TINYINT     NOT NULL,
-  [Month]             TINYINT     NOT NULL,
-  [MonthName]         VARCHAR(10) NOT NULL,
-  [Quarter]           TINYINT     NOT NULL,
-  QuarterName         VARCHAR(6)  NOT NULL,
-  [Year]              INT         NOT NULL,
-  MMYYYY              CHAR(6)     NOT NULL,
-  MonthYear           CHAR(7)     NOT NULL,
-  FirstDayOfMonth     DATE        NOT NULL,
-  LastDayOfMonth      DATE        NOT NULL,
-  FirstDayOfQuarter   DATE        NOT NULL,
-  LastDayOfQuarter    DATE        NOT NULL,
-  FirstDayOfYear      DATE        NOT NULL,
-  LastDayOfYear       DATE        NOT NULL,
-  FirstDayOfNextMonth DATE        NOT NULL,
-  FirstDayOfNextYear  DATE        NOT NULL
-)
-
-INSERT DWH.DimDate WITH (TABLOCKX)
-SELECT
-  DateKey       = CONVERT(INT, Style112),
-  [Date]        = [date],
-  [Day]         = CONVERT(TINYINT, [day]),
-  DaySuffix     = CONVERT(CHAR(2), CASE WHEN [day] / 10 = 1 THEN 'th' ELSE 
-                  CASE RIGHT([day], 1) WHEN '1' THEN 'st' WHEN '2' THEN 'nd' 
-	              WHEN '3' THEN 'rd' ELSE 'th' END END),
-  [Weekday]     = CONVERT(TINYINT, [DayOfWeek]),
-  [WeekDayName] = CONVERT(VARCHAR(10), DATENAME(WEEKDAY, [date])),
-  [IsWeekend]   = CONVERT(BIT, CASE WHEN [DayOfWeek] IN (1,7) THEN 1 ELSE 0 END),
-  [IsHoliday]   = CONVERT(BIT, 0),
-  HolidayText   = CONVERT(VARCHAR(64), NULL),
-  [DOWInMonth]  = CONVERT(TINYINT, ROW_NUMBER() OVER 
-                  (PARTITION BY FirstOfMonth, [DayOfWeek] ORDER BY [date])),
-  [DayOfYear]   = CONVERT(SMALLINT, DATEPART(DAYOFYEAR, [date])),
-  WeekOfMonth   = CONVERT(TINYINT, DENSE_RANK() OVER 
-                  (PARTITION BY [year], [month] ORDER BY [week])),
-  WeekOfYear    = CONVERT(TINYINT, [week]),
-  ISOWeekOfYear = CONVERT(TINYINT, ISOWeek),
-  [Month]       = CONVERT(TINYINT, [month]),
-  [MonthName]   = CONVERT(VARCHAR(10), [MonthName]),
-  [Quarter]     = CONVERT(TINYINT, [quarter]),
-  QuarterName   = CONVERT(VARCHAR(6), CASE [quarter] WHEN 1 THEN 'First' 
-                  WHEN 2 THEN 'Second' WHEN 3 THEN 'Third' WHEN 4 THEN 'Fourth' END), 
-  [Year]        = [year],
-  MMYYYY        = CONVERT(CHAR(6), LEFT(Style101, 2)    + LEFT(Style112, 4)),
-  MonthYear     = CONVERT(CHAR(7), LEFT([MonthName], 3) + LEFT(Style112, 4)),
-  FirstDayOfMonth     = FirstOfMonth,
-  LastDayOfMonth      = MAX([date]) OVER (PARTITION BY [year], [month]),
-  FirstDayOfQuarter   = MIN([date]) OVER (PARTITION BY [year], [quarter]),
-  LastDayOfQuarter    = MAX([date]) OVER (PARTITION BY [year], [quarter]),
-  FirstDayOfYear      = FirstOfYear,
-  LastDayOfYear       = MAX([date]) OVER (PARTITION BY [year]),
-  FirstDayOfNextMonth = DATEADD(MONTH, 1, FirstOfMonth),
-  FirstDayOfNextYear  = DATEADD(YEAR,  1, FirstOfYear)
-FROM #dim
-OPTION (MAXDOP 1);]]></Value>
-			</Property>
-			<Property Name="IsAnsiNullsOn" Value="True" />
-			<Relationship Name="BodyDependencies">
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[date]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[int]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[date]" />
-				</Entry>
-				<Entry>
-					<References Name="[DWH].[udp_DimDate].[#dim].[date]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[date]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[date]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[char]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[char]" />
-				</Entry>
-				<Entry>
-					<References Name="[DWH].[udp_DimDate].[#dim]" />
-				</Entry>
-				<Entry>
-					<References Name="[DWH].[udp_DimDate].[#dim].[date]" />
-				</Entry>
-				<Entry />
-				<Entry />
-				<Entry>
-					<References Name="[DWH].[DimDate]" />
-				</Entry>
-				<Entry>
-					<References Name="[DWH].[DimDate].[DateKey]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[int]" />
-				</Entry>
-				<Entry>
-					<References Name="[DWH].[DimDate].[Date]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[date]" />
-				</Entry>
-				<Entry>
-					<References Name="[DWH].[DimDate].[Day]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[tinyint]" />
-				</Entry>
-				<Entry>
-					<References Name="[DWH].[DimDate].[DaySuffix]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[char]" />
-				</Entry>
-				<Entry>
-					<References Name="[DWH].[DimDate].[Weekday]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[tinyint]" />
-				</Entry>
-				<Entry>
-					<References Name="[DWH].[DimDate].[WeekDayName]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[varchar]" />
-				</Entry>
-				<Entry>
-					<References Name="[DWH].[DimDate].[IsWeekend]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[bit]" />
-				</Entry>
-				<Entry>
-					<References Name="[DWH].[DimDate].[IsHoliday]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[bit]" />
-				</Entry>
-				<Entry>
-					<References Name="[DWH].[DimDate].[HolidayText]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[varchar]" />
-				</Entry>
-				<Entry>
-					<References Name="[DWH].[DimDate].[DOWInMonth]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[tinyint]" />
-				</Entry>
-				<Entry>
-					<References Name="[DWH].[DimDate].[DayOfYear]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[smallint]" />
-				</Entry>
-				<Entry>
-					<References Name="[DWH].[DimDate].[WeekOfMonth]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[tinyint]" />
-				</Entry>
-				<Entry>
-					<References Name="[DWH].[DimDate].[WeekOfYear]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[tinyint]" />
-				</Entry>
-				<Entry>
-					<References Name="[DWH].[DimDate].[ISOWeekOfYear]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[tinyint]" />
-				</Entry>
-				<Entry>
-					<References Name="[DWH].[DimDate].[Month]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[tinyint]" />
-				</Entry>
-				<Entry>
-					<References Name="[DWH].[DimDate].[MonthName]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[varchar]" />
-				</Entry>
-				<Entry>
-					<References Name="[DWH].[DimDate].[Quarter]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[tinyint]" />
-				</Entry>
-				<Entry>
-					<References Name="[DWH].[DimDate].[QuarterName]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[varchar]" />
-				</Entry>
-				<Entry>
-					<References Name="[DWH].[DimDate].[Year]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[int]" />
-				</Entry>
-				<Entry>
-					<References Name="[DWH].[DimDate].[MMYYYY]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[char]" />
-				</Entry>
-				<Entry>
-					<References Name="[DWH].[DimDate].[MonthYear]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[char]" />
-				</Entry>
-				<Entry>
-					<References Name="[DWH].[DimDate].[FirstDayOfMonth]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[date]" />
-				</Entry>
-				<Entry>
-					<References Name="[DWH].[DimDate].[LastDayOfMonth]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[date]" />
-				</Entry>
-				<Entry>
-					<References Name="[DWH].[DimDate].[FirstDayOfQuarter]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[date]" />
-				</Entry>
-				<Entry>
-					<References Name="[DWH].[DimDate].[LastDayOfQuarter]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[date]" />
-				</Entry>
-				<Entry>
-					<References Name="[DWH].[DimDate].[FirstDayOfYear]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[date]" />
-				</Entry>
-				<Entry>
-					<References Name="[DWH].[DimDate].[LastDayOfYear]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[date]" />
-				</Entry>
-				<Entry>
-					<References Name="[DWH].[DimDate].[FirstDayOfNextMonth]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[date]" />
-				</Entry>
-				<Entry>
-					<References Name="[DWH].[DimDate].[FirstDayOfNextYear]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[date]" />
-				</Entry>
-				<Entry>
-					<References Name="[DWH].[DimDate]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[int]" />
-				</Entry>
-				<Entry>
-					<References Name="[DWH].[udp_DimDate].[#dim].[Style112]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[tinyint]" />
-				</Entry>
-				<Entry>
-					<References Name="[DWH].[udp_DimDate].[#dim].[day]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[char]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[tinyint]" />
-				</Entry>
-				<Entry>
-					<References Name="[DWH].[udp_DimDate].[#dim].[DayOfWeek]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[varchar]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[bit]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[bit]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[varchar]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[tinyint]" />
-				</Entry>
-				<Entry>
-					<References Name="[DWH].[udp_DimDate].[#dim].[FirstOfMonth]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[smallint]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[tinyint]" />
-				</Entry>
-				<Entry>
-					<References Name="[DWH].[udp_DimDate].[#dim].[year]" />
-				</Entry>
-				<Entry>
-					<References Name="[DWH].[udp_DimDate].[#dim].[month]" />
-				</Entry>
-				<Entry>
-					<References Name="[DWH].[udp_DimDate].[#dim].[week]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[tinyint]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[tinyint]" />
-				</Entry>
-				<Entry>
-					<References Name="[DWH].[udp_DimDate].[#dim].[ISOweek]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[tinyint]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[varchar]" />
-				</Entry>
-				<Entry>
-					<References Name="[DWH].[udp_DimDate].[#dim].[MonthName]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[tinyint]" />
-				</Entry>
-				<Entry>
-					<References Name="[DWH].[udp_DimDate].[#dim].[quarter]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[varchar]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[char]" />
-				</Entry>
-				<Entry>
-					<References Name="[DWH].[udp_DimDate].[#dim].[Style101]" />
-				</Entry>
-				<Entry>
-					<References ExternalSource="BuiltIns" Name="[char]" />
-				</Entry>
-				<Entry>
-					<References Name="[DWH].[udp_DimDate].[#dim].[FirstOfYear]" />
-				</Entry>
-			</Relationship>
-			<Relationship Name="DynamicObjects">
-				<Entry>
-					<Element Type="SqlDynamicColumnSource" Name="[DWH].[udp_DimDate].[#dim]">
-						<Relationship Name="Columns">
-							<Entry>
-								<Element Type="SqlSimpleColumn" Name="[DWH].[udp_DimDate].[#dim].[date]">
-									<Property Name="IsNullable" Value="False" />
-									<Relationship Name="TypeSpecifier">
-										<Entry>
-											<Element Type="SqlTypeSpecifier">
-												<Relationship Name="Type">
-													<Entry>
-														<References ExternalSource="BuiltIns" Name="[date]" />
-													</Entry>
-												</Relationship>
-											</Element>
-										</Entry>
-									</Relationship>
-								</Element>
-							</Entry>
-							<Entry>
-								<Element Type="SqlComputedColumn" Name="[DWH].[udp_DimDate].[#dim].[day]">
-									<Property Name="ExpressionScript">
-										<Value><![CDATA[DATEPART(DAY,      [date])]]></Value>
-									</Property>
-								</Element>
-							</Entry>
-							<Entry>
-								<Element Type="SqlComputedColumn" Name="[DWH].[udp_DimDate].[#dim].[month]">
-									<Property Name="ExpressionScript">
-										<Value><![CDATA[DATEPART(MONTH,    [date])]]></Value>
-									</Property>
-								</Element>
-							</Entry>
-							<Entry>
-								<Element Type="SqlComputedColumn" Name="[DWH].[udp_DimDate].[#dim].[FirstOfMonth]">
-									<Property Name="ExpressionScript">
-										<Value><![CDATA[CONVERT(DATE, DATEADD(MONTH, DATEDIFF(MONTH, 0, [date]), 0))]]></Value>
-									</Property>
-								</Element>
-							</Entry>
-							<Entry>
-								<Element Type="SqlComputedColumn" Name="[DWH].[udp_DimDate].[#dim].[MonthName]">
-									<Property Name="ExpressionScript">
-										<Value><![CDATA[DATENAME(MONTH,    [date])]]></Value>
-									</Property>
-								</Element>
-							</Entry>
-							<Entry>
-								<Element Type="SqlComputedColumn" Name="[DWH].[udp_DimDate].[#dim].[week]">
-									<Property Name="ExpressionScript">
-										<Value><![CDATA[DATEPART(WEEK,     [date])]]></Value>
-									</Property>
-								</Element>
-							</Entry>
-							<Entry>
-								<Element Type="SqlComputedColumn" Name="[DWH].[udp_DimDate].[#dim].[ISOweek]">
-									<Property Name="ExpressionScript">
-										<Value><![CDATA[DATEPART(ISO_WEEK, [date])]]></Value>
-									</Property>
-								</Element>
-							</Entry>
-							<Entry>
-								<Element Type="SqlComputedColumn" Name="[DWH].[udp_DimDate].[#dim].[DayOfWeek]">
-									<Property Name="ExpressionScript">
-										<Value><![CDATA[DATEPART(WEEKDAY,  [date])]]></Value>
-									</Property>
-								</Element>
-							</Entry>
-							<Entry>
-								<Element Type="SqlComputedColumn" Name="[DWH].[udp_DimDate].[#dim].[quarter]">
-									<Property Name="ExpressionScript">
-										<Value><![CDATA[DATEPART(QUARTER,  [date])]]></Value>
-									</Property>
-								</Element>
-							</Entry>
-							<Entry>
-								<Element Type="SqlComputedColumn" Name="[DWH].[udp_DimDate].[#dim].[year]">
-									<Property Name="ExpressionScript">
-										<Value><![CDATA[DATEPART(YEAR,     [date])]]></Value>
-									</Property>
-								</Element>
-							</Entry>
-							<Entry>
-								<Element Type="SqlComputedColumn" Name="[DWH].[udp_DimDate].[#dim].[FirstOfYear]">
-									<Property Name="ExpressionScript">
-										<Value><![CDATA[CONVERT(DATE, DATEADD(YEAR,  DATEDIFF(YEAR,  0, [date]), 0))]]></Value>
-									</Property>
-								</Element>
-							</Entry>
-							<Entry>
-								<Element Type="SqlComputedColumn" Name="[DWH].[udp_DimDate].[#dim].[Style112]">
-									<Property Name="ExpressionScript">
-										<Value><![CDATA[CONVERT(CHAR(8),   [date], 112)]]></Value>
-									</Property>
-								</Element>
-							</Entry>
-							<Entry>
-								<Element Type="SqlComputedColumn" Name="[DWH].[udp_DimDate].[#dim].[Style101]">
-									<Property Name="ExpressionScript">
-										<Value><![CDATA[CONVERT(CHAR(10),  [date], 101)]]></Value>
-									</Property>
-								</Element>
-							</Entry>
-						</Relationship>
-					</Element>
-				</Entry>
-			</Relationship>
-			<Relationship Name="Schema">
-				<Entry>
-					<References Name="[DWH]" />
-				</Entry>
-			</Relationship>
-			<Annotation Type="SysCommentsObjectAnnotation">
-				<Property Name="CreateOffset" Value="4" />
-				<Property Name="Length" Value="5050" />
-				<Property Name="StartLine" Value="1" />
-				<Property Name="StartColumn" Value="1" />
-				<Property Name="HeaderContents" Value="&#xD;&#xA;&#xD;&#xA;CREATE PROCEDURE [DWH].[udp_DimDate] AS" />
-			</Annotation>
 		</Element>
 		<Element Type="SqlProcedure" Name="[DWH].[udp_DimEmployee]">
 			<Property Name="BodyScript">
@@ -1633,7 +1147,7 @@ ORDER BY IdDimEmployee, IdDimJobs]]></Value>
 				<Property Name="HeaderContents" Value="CREATE PROCEDURE [DWH].[udp_FactJobChange] AS" />
 			</Annotation>
 		</Element>
-		<Element Type="SqlView" Name="[DWH].[vw_employee_job_information]">
+		<Element Type="SqlView" Name="[DWH].[view_EemployeeJobInformation]">
 			<Property Name="QueryScript">
 				<Value><![CDATA[
 
@@ -1644,7 +1158,7 @@ SELECT
 	JobTitle,
 	FactMoney AS Salary,
 	CASE WHEN DWH.FactJobChange.IdDimDate = MAX(IdDimDate)OVER(PARTITION BY DWH.DimEmployee.BusinessEntityID) THEN 'Present' ELSE 'Past' END AS CurrentJob,
-	DWH.FactJobChange.IdDimDate
+	[Date]
 FROM	DWH.FactJobChange
 INNER JOIN DWH.DimEmployee
 	ON	DWH.DimEmployee.IdDimEmployee = DWH.FactJobChange.IdDimEmployee
@@ -1668,7 +1182,7 @@ HAVING COUNT(DWH.FactJobChange.IdDimDate) >= 2
 			<Property Name="IsAnsiNullsOn" Value="True" />
 			<Relationship Name="Columns">
 				<Entry>
-					<Element Type="SqlComputedColumn" Name="[DWH].[vw_employee_job_information].[PersonID]">
+					<Element Type="SqlComputedColumn" Name="[DWH].[view_EemployeeJobInformation].[PersonID]">
 						<Relationship Name="ExpressionDependencies">
 							<Entry>
 								<References Name="[DWH].[DimEmployee].[BusinessEntityID]" />
@@ -1677,7 +1191,7 @@ HAVING COUNT(DWH.FactJobChange.IdDimDate) >= 2
 					</Element>
 				</Entry>
 				<Entry>
-					<Element Type="SqlComputedColumn" Name="[DWH].[vw_employee_job_information].[FirstName]">
+					<Element Type="SqlComputedColumn" Name="[DWH].[view_EemployeeJobInformation].[FirstName]">
 						<Relationship Name="ExpressionDependencies">
 							<Entry>
 								<References Name="[DWH].[DimEmployee].[FirstName]" />
@@ -1686,7 +1200,7 @@ HAVING COUNT(DWH.FactJobChange.IdDimDate) >= 2
 					</Element>
 				</Entry>
 				<Entry>
-					<Element Type="SqlComputedColumn" Name="[DWH].[vw_employee_job_information].[LastName]">
+					<Element Type="SqlComputedColumn" Name="[DWH].[view_EemployeeJobInformation].[LastName]">
 						<Relationship Name="ExpressionDependencies">
 							<Entry>
 								<References Name="[DWH].[DimEmployee].[LastName]" />
@@ -1695,7 +1209,7 @@ HAVING COUNT(DWH.FactJobChange.IdDimDate) >= 2
 					</Element>
 				</Entry>
 				<Entry>
-					<Element Type="SqlComputedColumn" Name="[DWH].[vw_employee_job_information].[JobTitle]">
+					<Element Type="SqlComputedColumn" Name="[DWH].[view_EemployeeJobInformation].[JobTitle]">
 						<Relationship Name="ExpressionDependencies">
 							<Entry>
 								<References Name="[DWH].[DimJobs].[JobTitle]" />
@@ -1704,7 +1218,7 @@ HAVING COUNT(DWH.FactJobChange.IdDimDate) >= 2
 					</Element>
 				</Entry>
 				<Entry>
-					<Element Type="SqlComputedColumn" Name="[DWH].[vw_employee_job_information].[Salary]">
+					<Element Type="SqlComputedColumn" Name="[DWH].[view_EemployeeJobInformation].[Salary]">
 						<Relationship Name="ExpressionDependencies">
 							<Entry>
 								<References Name="[DWH].[FactJobChange].[FactMoney]" />
@@ -1713,13 +1227,13 @@ HAVING COUNT(DWH.FactJobChange.IdDimDate) >= 2
 					</Element>
 				</Entry>
 				<Entry>
-					<Element Type="SqlComputedColumn" Name="[DWH].[vw_employee_job_information].[CurrentJob]" />
+					<Element Type="SqlComputedColumn" Name="[DWH].[view_EemployeeJobInformation].[CurrentJob]" />
 				</Entry>
 				<Entry>
-					<Element Type="SqlComputedColumn" Name="[DWH].[vw_employee_job_information].[IdDimDate]">
+					<Element Type="SqlComputedColumn" Name="[DWH].[view_EemployeeJobInformation].[Date]">
 						<Relationship Name="ExpressionDependencies">
 							<Entry>
-								<References Name="[DWH].[FactJobChange].[IdDimDate]" />
+								<References Name="[DWH].[DimDate].[Date]" />
 							</Entry>
 						</Relationship>
 					</Element>
@@ -1778,6 +1292,9 @@ HAVING COUNT(DWH.FactJobChange.IdDimDate) >= 2
 					<References Name="[DWH].[DimEmployee].[BusinessEntityID]" />
 				</Entry>
 				<Entry>
+					<References Name="[DWH].[DimDate].[Date]" />
+				</Entry>
+				<Entry>
 					<References Name="[DWH].[DimEmployee].[IdDimEmployee]" />
 				</Entry>
 				<Entry>
@@ -1805,14 +1322,14 @@ HAVING COUNT(DWH.FactJobChange.IdDimDate) >= 2
 				</Entry>
 			</Relationship>
 			<Annotation Type="SysCommentsObjectAnnotation">
-				<Property Name="CreateOffset" Value="8" />
-				<Property Name="Length" Value="1013" />
+				<Property Name="CreateOffset" Value="10" />
+				<Property Name="Length" Value="995" />
 				<Property Name="StartLine" Value="1" />
 				<Property Name="StartColumn" Value="1" />
-				<Property Name="HeaderContents" Value="&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;CREATE VIEW [DWH].[vw_employee_job_information] AS" />
+				<Property Name="HeaderContents" Value="&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;CREATE VIEW [DWH].[view_EemployeeJobInformation] AS" />
 			</Annotation>
 		</Element>
-		<Element Type="SqlView" Name="[DWH].[vw_employee_name_information]">
+		<Element Type="SqlView" Name="[DWH].[view_EmployeeNameInformation]">
 			<Property Name="QueryScript">
 				<Value><![CDATA[
 
@@ -1838,7 +1355,7 @@ WHERE cte_counting.OtherLastName >= 2]]></Value>
 			<Property Name="IsAnsiNullsOn" Value="True" />
 			<Relationship Name="Columns">
 				<Entry>
-					<Element Type="SqlComputedColumn" Name="[DWH].[vw_employee_name_information].[BusinessEntityID]">
+					<Element Type="SqlComputedColumn" Name="[DWH].[view_EmployeeNameInformation].[BusinessEntityID]">
 						<Relationship Name="ExpressionDependencies">
 							<Entry>
 								<References Name="[DWH].[DimEmployee].[BusinessEntityID]" />
@@ -1847,7 +1364,7 @@ WHERE cte_counting.OtherLastName >= 2]]></Value>
 					</Element>
 				</Entry>
 				<Entry>
-					<Element Type="SqlComputedColumn" Name="[DWH].[vw_employee_name_information].[FirstName]">
+					<Element Type="SqlComputedColumn" Name="[DWH].[view_EmployeeNameInformation].[FirstName]">
 						<Relationship Name="ExpressionDependencies">
 							<Entry>
 								<References Name="[DWH].[DimEmployee].[FirstName]" />
@@ -1856,7 +1373,7 @@ WHERE cte_counting.OtherLastName >= 2]]></Value>
 					</Element>
 				</Entry>
 				<Entry>
-					<Element Type="SqlComputedColumn" Name="[DWH].[vw_employee_name_information].[LastName]">
+					<Element Type="SqlComputedColumn" Name="[DWH].[view_EmployeeNameInformation].[LastName]">
 						<Relationship Name="ExpressionDependencies">
 							<Entry>
 								<References Name="[DWH].[DimEmployee].[LastName]" />
@@ -1865,15 +1382,15 @@ WHERE cte_counting.OtherLastName >= 2]]></Value>
 					</Element>
 				</Entry>
 				<Entry>
-					<Element Type="SqlComputedColumn" Name="[DWH].[vw_employee_name_information].[InformationRelevance]" />
+					<Element Type="SqlComputedColumn" Name="[DWH].[view_EmployeeNameInformation].[InformationRelevance]" />
 				</Entry>
 			</Relationship>
 			<Relationship Name="DynamicObjects">
 				<Entry>
-					<Element Type="SqlDynamicColumnSource" Name="[DWH].[vw_employee_name_information].[CTE1].[cte_counting]">
+					<Element Type="SqlDynamicColumnSource" Name="[DWH].[view_EmployeeNameInformation].[CTE1].[cte_counting]">
 						<Relationship Name="Columns">
 							<Entry>
-								<Element Type="SqlComputedColumn" Name="[DWH].[vw_employee_name_information].[CTE1].[cte_counting].[BusinessEntityID]">
+								<Element Type="SqlComputedColumn" Name="[DWH].[view_EmployeeNameInformation].[CTE1].[cte_counting].[BusinessEntityID]">
 									<Relationship Name="ExpressionDependencies">
 										<Entry>
 											<References Name="[DWH].[DimEmployee].[BusinessEntityID]" />
@@ -1882,7 +1399,7 @@ WHERE cte_counting.OtherLastName >= 2]]></Value>
 								</Element>
 							</Entry>
 							<Entry>
-								<Element Type="SqlComputedColumn" Name="[DWH].[vw_employee_name_information].[CTE1].[cte_counting].[OtherLastName]" />
+								<Element Type="SqlComputedColumn" Name="[DWH].[view_EmployeeNameInformation].[CTE1].[cte_counting].[OtherLastName]" />
 							</Entry>
 						</Relationship>
 					</Element>
@@ -1917,10 +1434,10 @@ WHERE cte_counting.OtherLastName >= 2]]></Value>
 				</Entry>
 			</Relationship>
 			<Annotation Type="SysCommentsObjectAnnotation">
-				<Property Name="Length" Value="589" />
+				<Property Name="Length" Value="591" />
 				<Property Name="StartLine" Value="1" />
 				<Property Name="StartColumn" Value="1" />
-				<Property Name="HeaderContents" Value="CREATE VIEW [DWH].vw_employee_name_information AS" />
+				<Property Name="HeaderContents" Value="CREATE VIEW [DWH].[view_EmployeeNameInformation] AS" />
 			</Annotation>
 		</Element>
 		<Element Type="SqlSchema" Name="[SGT]">

@@ -1,4 +1,4 @@
-﻿CREATE VIEW [DWH].vw_employee_name_information AS
+﻿CREATE VIEW [DWH].[view_EmployeeNameInformation] AS
 
 WITH cte_counting AS
 (

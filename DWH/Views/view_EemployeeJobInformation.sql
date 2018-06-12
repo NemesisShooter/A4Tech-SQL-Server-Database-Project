@@ -3,7 +3,7 @@
 
 
 
-CREATE VIEW [DWH].[vw_employee_job_information] AS
+CREATE VIEW [DWH].[view_EemployeeJobInformation] AS
 
 SELECT 
 	DWH.DimEmployee.BusinessEntityID AS PersonID,
