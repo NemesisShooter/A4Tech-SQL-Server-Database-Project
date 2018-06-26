@@ -88,6 +88,9 @@
   <ItemGroup>
     <None Include="A4Tech SQL Server Database Project.publish.xml" />
     <None Include="DateScript.sql" />
+    <None Include="JobSSISDeployment.sql" />
+    <None Include="CreatingDevFolder.sql" />
+    <None Include="CreatingAndConfiguringEnvironment.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Script.PostDeployment.sql" />
