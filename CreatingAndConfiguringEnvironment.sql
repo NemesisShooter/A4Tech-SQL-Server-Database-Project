@@ -3,6 +3,7 @@ EXEC [SSISDB].[catalog].[create_environment]
 @environment_name = N'Dev',   
 @environment_description = N'Development environment',   
 @folder_name = N'Dev'
+GO
 
 --Adding valuses to the environment
 DECLARE @var sql_variant = N'A4Tech'

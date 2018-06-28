@@ -30,8 +30,8 @@ DECLARE
 @ReferenceId NVARCHAR(3) = 
 (
 SELECT  reference_id
-  FROM  SSISDB.[catalog].environment_references er
-        JOIN SSISDB.[catalog].projects p ON p.project_id = er.project_id
+  FROM  [SSISDB].[catalog].[environment_references] er
+        JOIN [SSISDB].[catalog].[projects] p ON p.project_id = er.project_id
  WHERE  er.environment_name = 'DEV'
    AND  p.name              = 'A4Tech'
    ),

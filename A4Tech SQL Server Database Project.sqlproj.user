@@ -3,5 +3,8 @@
   <PropertyGroup>
     <StartupScript>(Blank)</StartupScript>
     <StartAction>StartNone</StartAction>
+    <SqlCmdVar__1>1</SqlCmdVar__1>
+    <SqlCmdVar__2>1</SqlCmdVar__2>
+    <SqlCmdVar__3>1</SqlCmdVar__3>
   </PropertyGroup>
 </Project>
