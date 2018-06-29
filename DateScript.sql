@@ -1,6 +1,12 @@
-﻿PRINT 'PDS: Filling DimDate Data Rows'
+﻿IF EXISTS (SELECT * FROM DWH.DimDate)
+	BEGIN
+		PRINT 'PDS: Nothing to input DimDate'
+	END
+ELSE
+	BEGIN
+		PRINT 'PDS: Loading DimDate'
 
-DECLARE @StartDate DATE = '20000101', @NumberOfYears INT = 30;
+		DECLARE @StartDate DATE = '20000101', @NumberOfYears INT = 30;
 
 		-- prevent set or regional settings from interfering with 
 		-- interpretation of dates / literals
@@ -90,3 +96,6 @@ DECLARE @StartDate DATE = '20000101', @NumberOfYears INT = 30;
 			[FirstDayOfNextYear]	= DATEADD(YEAR,  1, FirstOfYear)
 		FROM #dim
 		OPTION (MAXDOP 1);
+
+		PRINT 'PDS: Finishing...'
+	END;
