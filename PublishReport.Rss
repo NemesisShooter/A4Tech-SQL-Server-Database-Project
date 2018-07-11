@@ -1,0 +1,28 @@
+﻿' Script to deploy report to report server
+' EXECUTE VIA COMMAND LINE
+' "C:\Program Files (x86)\Microsoft SQL Server\110\Tools\Binn\rs.exe" -i C:\tools\PUBLISHREPORT.rss -s "localhost/ReportServer_SQL2012" -v REPORTNAME="Customers_Near_Stores" -v REPORTSERVER_FOLDER="/AdventureWorks Sample Reports" -t -v FILEPATH="C:\tools\\"
+
+DIM definition As [Byte]() = Nothing
+DIM warnings As Warning() = Nothing
+
+Public Sub Main()
+ Try
+ DIM stream As FileStream = File.OpenRead(FILEPATH + REPORTNAME + ".rdl")
+ definition = New [Byte](stream.Length - 1) {}
+ stream.Read(definition, 0, CInt(stream.Length))
+ 
+ warnings = rs.CreateReport(REPORTNAME, REPORTSERVER_FOLDER, True, definition, Nothing)
+ 
+ If Not (warnings Is Nothing) Then
+ DIM warning As Warning
+ For Each warning In warnings
+ Console.WriteLine(warning.Message)
+ Next warning
+ Else
+ Console.WriteLine("Report: {0} PUBLISHED!", REPORTNAME)
+ End If
+ 
+ Catch e As IOException
+ Console.WriteLine(e.Message)
+ End Try
+End Sub

@@ -1,4 +1,5 @@
-﻿IF $(CreatingDevFolder) = 1
+﻿--delete_folder [ @folder_name = ] folder_name  
+IF $(CreatingDevFolder) = 1
 	BEGIN
 		PRINT 'PDS: Creating Dev folder'
 
